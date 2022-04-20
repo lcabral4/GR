@@ -1,0 +1,107 @@
+#!/bin/sh
+
+#croway Cluster Management Software (MCMS)
+################################################################################
+# Sample submission script for batch jobs. (SLURM)
+#
+# With the exception of interactive shell sessions, all jobs you run must be
+# through a batch script such as this.
+#
+# YOU MUST EDIT THIS FILE TO CONTAIN YOUR COMMANDS.
+#
+# Once your script is complete, submit it with the sbatch utility.
+# For example:
+#  sbatch example-custom-job.sh
+#
+#----------------------------------------------------------------
+#
+# Using a job scheduler allows all users to share the compute cluster without
+# slowing down each other's jobs. Without it, it's not possible to be certain
+# two programs won't try to use the same CPUs, GPUs or coprocessors.
+#
+# A SLURM batch script is just a *nix shell script with additional
+# information describing the desired cluster resources.
+#
+# The complete documentation is available here:
+# http://slurm.schedmd.com/sbatch.html
+#
+################################################################################
+
+
+# The following sections (starting with #SBATCH) inform the scheduler what
+# capabilities and resources your job will require. All other lines beginning
+# with '#' characters are comments.
+#
+# Add comments so you don't forget what your script is doing.
+
+
+# Request the number of CPUs and compute nodes needed by your job.
+# You must instruct the number of nodes and the number of cores.
+# You can only request up to 24 tasks per node (or 32 on the power-single
+# queue), or you will get the error "Batch job submission failed: Requested
+# node configuration is not available"
+#
+# Request one processor core:
+#   --nodes=1 --ntasks-per-node=1
+#
+# Request two compute nodes, each with ten processor cores:
+#   --nodes=2 --ntasks-per-node=10
+#
+# Request all twenty processor cores on one compute node:
+#   --nodes=1 --ntasks-per-node=20
+#
+#SBATCH --nodes=1 --ntasks-per-node=1
+
+
+# Estimate how much memory you expect your job to use (in megabytes).
+# Common values:
+#     4GB    4096
+#     8GB    8192
+#   ~16GB   16000
+#   ~32GB   32000
+#   ~64GB   64000
+#
+#SBATCH --mem=16000
+
+
+# Specify how long you expect your job to run. By default SLURM will kill jobs
+# that over-run their reservation, so you need to make a realistic estimate.
+# PLAY NICE!
+#
+# Request 1 day:
+#   --time=24:00:00
+#
+# Request 1 hour:
+#   --time=1:00:00
+#
+# Request 15 minutes:
+#   --time=15:00
+#
+#SBATCH --time=24:00:00
+
+
+# Set the job name
+#SBATCH --job-name=quantum
+
+
+# If desired, you may set the filenames for your program's output.
+# The %j variable will be replaced with the Job ID # of the job.
+#SBATCH --error=error.txt
+#SBATCH --output=output.txt
+
+# Request no GPUs
+#SBATCH --gres=gpu:M2050:0
+
+# Also, change to the working directory
+#SBATCH --mail-user=igifford@umassd.edu  
+
+#Set different types of notifications:
+
+#SBATCH --mail-type=BEGIN
+#SBATCH --mail-type=END
+
+################################################################################
+# THIS IS WHERE YOU SPECIFY THE JOBS/TASKS TO RUN
+################################################################################
+
+python main.py
